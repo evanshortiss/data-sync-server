@@ -18,8 +18,9 @@ if (process.env.LOG_LEVEL) {
 }
 
 // schema
-const buildSchema = require('./buildSchema')
+const buildSchema = require('graphql-execution')
 const schemaListenerCreator = require('./lib/schemaListeners/schemaListenerCreator')
+const { makeExecutableSchema } = require('graphql-tools')
 
 class DataSyncServer {
   constructor (config, models, pubsub) {
@@ -74,7 +75,7 @@ class DataSyncServer {
     this.serverConfig = serverConfig
 
     // generate the GraphQL Schema
-    const { schema, dataSources } = await buildSchema(this.models, this.pubsub, this.serverConfig.schemaDirectives)
+    const { schema, dataSources } = await buildSchema(this.models, this.pubsub, this.serverConfig.schemaDirectives, makeExecutableSchema)
     this.schema = schema
     this.dataSources = dataSources
 
@@ -118,7 +119,7 @@ class DataSyncServer {
     log.info('Received schema change notification. Rebuilding it')
     let newSchema
     try {
-      newSchema = await buildSchema(this.models, this.pubsub, this.serverConfig.schemaDirectives)
+      newSchema = await buildSchema(this.models, this.pubsub, this.serverConfig.schemaDirectives, makeExecutableSchema)
     } catch (ex) {
       log.error('Error while reloading config')
       log.error(ex)
