@@ -18,7 +18,7 @@ if (process.env.LOG_LEVEL) {
 }
 
 // schema
-const buildSchema = require('data-sync-gql-core')
+const buildSchema = require('@aerogear/data-sync-gql-core')
 const schemaListenerCreator = require('./lib/schemaListeners/schemaListenerCreator')
 const { makeExecutableSchema } = require('graphql-tools')
 
